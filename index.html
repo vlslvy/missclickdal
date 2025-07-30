@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вишня или Яблоко?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 100;
+            position: relative;
+        }
+        
+        button:hover {
+            background-color: #ff6b81;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .fruit {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            animation: 
+                appear 0.5s ease-out forwards, 
+                float 3s ease-in-out infinite;
+            z-index: 10;
+        }
+        
+        @keyframes appear {
+            0% {
+                transform: scale(0) rotate(-30deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="startGame()">Нажми, чтобы узнать Вишня или Яблоко</button>
+    
+    <audio id="music" class="hidden">
+        <source src="SOFIA_converted.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+
+    <script>
+        // Пути к изображениям (замените на свои)
+        const fruits = [
+            'cherry.jpg',  // вишня
+            'apple.jpg'    // яблоко
+        ];
+        
+        function startGame() {
+            const button = document.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Наслаждайся!';
+            
+            // Воспроизводим музыку
+            const music = document.getElementById('music');
+            music.volume = 0.7;
+            music.play().catch(e => console.log("Ошибка воспроизведения:", e));
+            
+            // Показываем 6 фруктов
+            showFruits(6);
+            
+            // Через 10 секунд останавливаем
+            setTimeout(() => {
+                stopGame();
+            }, 10000);
+        }
+        
+        function showFruits(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    // Выбираем случайный фрукт
+                    img.src = fruits[Math.floor(Math.random() * fruits.length)];
+                    img.className = 'fruit';
+                    
+                    // Случайная позиция
+                    img.style.left = ${50 + Math.random() * (window.innerWidth - 200)}px;
+                    img.style.top = ${50 + Math.random() * (window.innerHeight - 200)}px;
+                    
+                    // Случайный размер
+                    const size = 100 + Math.random() * 100;
+                    img.style.width = ${size}px;
+                    img.style.height = ${size}px;
+                    
+                    // Случайная задержка анимации
+                    img.style.animationDelay = ${Math.random() * 0.5}s;
+                    
+                    document.body.appendChild(img);
+                    
+                    // Удаляем через 7-10 секунд
+                    setTimeout(() => {
+
+
+img.remove();
+                    }, 7000 + Math.random() * 3000);
+                    
+                }, i * 300); // Задержка между появлением фруктов
+            }
+        }
+        
+        function stopGame() {
+            const music = document.getElementById('music');
+            music.pause();
+            music.currentTime = 0;
+            
+            const button = document.querySelector('button');
+            button.disabled = false;
+            button.textContent = 'Попробовать снова';
+        }
+        
+        // Остановка при нажатии ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                stopGame();
+            }
+        });
+    </script>
+</body>
+</html>
